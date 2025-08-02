@@ -1,0 +1,5 @@
+﻿  SM4_AESNI.cpp
+  SM4_AESNI.h
+  正在生成代码...
+x64\Debug\SM4_AESNI.obj : warning LNK4042: 对象被多次指定；已忽略多余的指定
+  SM4_AESNI.vcxproj -> G:\Cyber_practice\Project1\SM4_AESNI\x64\Debug\SM4_AESNI.exe

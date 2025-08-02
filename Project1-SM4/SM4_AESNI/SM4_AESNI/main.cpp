@@ -1,0 +1,35 @@
+#include "SM4_AESNI.h"
+#include <iostream>
+
+int main(int argc, char* argv[]) {
+    if (argc != 5) {
+        std::cerr << "用法: " << argv[0] << " <操作模式> <输入文件> <密钥文件> <输出文件>" << std::endl;
+        std::cerr << "操作模式: -e (加密) 或 -d (解密)" << std::endl;
+        return 1;
+    }
+
+    std::string op = argv[1];
+    std::string in_path = argv[2];
+    std::string key_path = argv[3];
+    std::string out_path = argv[4];
+
+    if (op == "-e") {
+        if (encrypt_file(in_path, key_path, out_path)) {
+            std::cout << "AESNI指令集优化加密成功，输出文件: " << out_path << std::endl;
+            return 0;
+        }
+    }
+    else if (op == "-d") {
+        if (decrypt_file(in_path, key_path, out_path)) {
+            std::cout << "AESNI指令集优化解密成功，输出文件: " << out_path << std::endl;
+            return 0;
+        }
+    }
+    else {
+        std::cerr << "无效操作模式" << std::endl;
+        return 1;
+    }
+
+    std::cerr << "操作失败" << std::endl;
+    return 1;
+}
