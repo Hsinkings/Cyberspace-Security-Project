@@ -10,6 +10,53 @@
 - **SM4_TT**：基于T-Table预计算技术的优化实现，通过空间换时间提升执行效率
 - **SM4_AESNI**：利用Intel AES-NI指令集与SIMD并行技术的硬件加速实现，面向高性能场景
 
+### 1.1 项目目录结构详解
+
+本项目采用模块化设计，包含三个独立的SM4实现版本，每个版本都有完整的源代码、编译配置和可执行文件。项目结构如下：
+
+#### 核心实现模块
+- **SM4_Basic/**：基础实现模块
+  - `SM4_Basic/SM4/`：源代码目录，包含SM4.h、SM4.cpp、main.cpp
+  - `SM4_Basic/SM4_Basic.sln`：Visual Studio解决方案文件
+  - `SM4_Basic.exe`：编译后的可执行文件（根目录）
+  - `SM4_Basic/x64/Debug/`：编译输出目录，包含调试版本可执行文件
+
+- **SM4_TT/**：T-Table优化实现模块
+  - `SM4_TT/SM4_TT/`：源代码目录，包含SM4_Ttable.h、SM4_Ttable.cpp、main.cpp
+  - `SM4_TT/SM4_TT.sln`：Visual Studio解决方案文件
+  - `SM4_TT.exe`：编译后的可执行文件（根目录）
+  - `SM4_TT/x64/Debug/`：编译输出目录，包含调试版本可执行文件
+
+- **SM4_AESNI/**：AES-NI硬件加速实现模块
+  - `SM4_AESNI/SM4_AESNI/`：源代码目录，包含SM4_AESNI.h、SM4_AESNI.cpp、main.cpp
+  - `SM4_AESNI/SM4_AESNI.sln`：Visual Studio解决方案文件
+  - `SM4_AESNI.exe`：编译后的可执行文件（根目录）
+  - `SM4_AESNI/x64/Debug/`：编译输出目录，包含调试版本可执行文件
+
+#### 测试与验证模块
+- **Tests/**：测试文件目录
+  - `Tests/plaintext.txt`：测试用明文文件
+  - `Tests/key.txt`：测试用密钥文件
+  - `Tests/ciphertext_*.txt`：各版本加密结果文件
+  - `Tests/Sample_*.txt`：标准测试向量文件
+
+- **Test_results/**：测试结果截图目录
+  - 包含算法正确性验证、性能对比测试等截图文件
+
+#### 工具与文档
+- **testall.py**：自动化性能测试脚本，用于批量测试三种实现的性能
+- **参考文档/**：算法标准文档和参考资料
+  - `参考文档/【SM4算法国标】GBT32907-2016标准.pdf`：SM4算法国家标准
+  - `参考文档/20250707-sm4-public.pdf`：SM4算法公开文档
+  - `参考文档/20250710-fu-SM2-public.pdf`：SM2算法文档
+  - `参考文档/20250710-fu-SM3-public.pdf`：SM3算法文档
+
+#### 编译输出目录
+每个实现模块都包含完整的编译输出目录结构：
+- `x64/Debug/`：64位调试版本编译输出
+- `x64/Release/`：64位发布版本编译输出（如需要）
+- 包含.obj、.pdb、.ilk等编译中间文件和调试信息
+
 ### 2. SM4算法核心原理（基于GB/T32907-2016标准）
 
 #### 2.1 算法参数与结构
@@ -243,32 +290,82 @@ void SM4_AESNI_enc4blocks(const uint8_t* plaintext, uint8_t* ciphertext, const u
 #### 6.1 项目结构
 ```
 Project1-SM4/
-├── SM4_Basic/          # 基础实现
-│   ├── SM4/
-│   │   ├── SM4.h       # 头文件
-│   │   ├── SM4.cpp     # 实现文件
-│   │   └── main.cpp    # 主程序
-│   └── SM4_Basic.exe   # 可执行文件
-├── SM4_TT/             # T-Table优化实现
-│   ├── SM4_TT/
-│   │   ├── SM4_Ttable.h
-│   │   ├── SM4_Ttable.cpp
-│   │   └── main.cpp
-│   └── SM4_TT.exe
-├── SM4_AESNI/          # AES-NI优化实现
-│   ├── SM4_AESNI/
-│   │   ├── SM4_AESNI.h
-│   │   ├── SM4_AESNI.cpp
-│   │   └── main.cpp
-│   └── SM4_AESNI.exe
-├── Tests/              # 测试文件
-│   ├── plaintext.txt   # 明文文件
-│   ├── key.txt         # 密钥文件
-│   └── *.txt           # 其他测试文件
-├── testall.py          # 性能测试脚本
-├── Tests/              # 算法正确性及性能测试结果截图
-│   └── testresult.png(s)   
-└── README.md           # 项目说明
+├── SM4_Basic/                    # 基础实现模块
+│   ├── SM4/                      # 源代码目录
+│   │   ├── SM4.h                 # 头文件
+│   │   ├── SM4.cpp               # 实现文件
+│   │   ├── main.cpp              # 主程序
+│   │   ├── SM4.vcxproj           # Visual Studio项目文件
+│   │   ├── SM4.vcxproj.filters   # 项目过滤器
+│   │   └── SM4.vcxproj.user     # 用户配置文件
+│   ├── SM4_Basic.sln             # Visual Studio解决方案
+│   ├── x64/                      # 64位编译输出
+│   │   └── Debug/                # 调试版本
+│   │       ├── SM4_Basic.exe     # 可执行文件
+│   │       ├── *.obj             # 目标文件
+│   │       ├── *.pdb             # 调试信息
+│   │       └── *.tlog/           # 编译日志
+│   └── SM4_Basic.exe             # 根目录可执行文件
+├── SM4_TT/                       # T-Table优化实现模块
+│   ├── SM4_TT/                   # 源代码目录
+│   │   ├── SM4_Ttable.h          # 头文件
+│   │   ├── SM4_Ttable.cpp        # 实现文件
+│   │   ├── main.cpp              # 主程序
+│   │   ├── SM4_TT.vcxproj       # Visual Studio项目文件
+│   │   ├── SM4_TT.vcxproj.filters
+│   │   └── SM4_TT.vcxproj.user
+│   ├── SM4_TT.sln                # Visual Studio解决方案
+│   ├── x64/                      # 64位编译输出
+│   │   └── Debug/                # 调试版本
+│   │       ├── SM4_TT.exe        # 可执行文件
+│   │       ├── *.obj             # 目标文件
+│   │       ├── *.pdb             # 调试信息
+│   │       └── *.tlog/           # 编译日志
+│   └── SM4_TT.exe                # 根目录可执行文件
+├── SM4_AESNI/                    # AES-NI硬件加速实现模块
+│   ├── SM4_AESNI/                # 源代码目录
+│   │   ├── SM4_AESNI.h           # 头文件
+│   │   ├── SM4_AESNI.cpp         # 实现文件
+│   │   ├── main.cpp              # 主程序
+│   │   ├── SM4_AESNI.vcxproj    # Visual Studio项目文件
+│   │   ├── SM4_AESNI.vcxproj.filters
+│   │   └── SM4_AESNI.vcxproj.user
+│   ├── SM4_AESNI.sln             # Visual Studio解决方案
+│   ├── x64/                      # 64位编译输出
+│   │   └── Debug/                # 调试版本
+│   │       ├── SM4_AESNI.exe     # 可执行文件
+│   │       ├── *.obj             # 目标文件
+│   │       ├── *.pdb             # 调试信息
+│   │       └── *.tlog/           # 编译日志
+│   └── SM4_AESNI.exe             # 根目录可执行文件
+├── Tests/                        # 测试文件目录
+│   ├── plaintext.txt             # 测试明文文件
+│   ├── key.txt                   # 测试密钥文件
+│   ├── ciphertext_basic.txt      # Basic版本加密结果
+│   ├── ciphertext_basic_dec.txt  # Basic版本解密结果
+│   ├── ciphertext_Ttable.txt     # TT版本加密结果
+│   ├── ciphertext_Ttable_dec.txt # TT版本解密结果
+│   ├── Sample.txt                # 标准测试向量
+│   ├── Sample_AESNIenc.txt       # AESNI版本加密结果
+│   └── Sample_AESNIdec.txt       # AESNI版本解密结果
+├── Test_results/                  # 测试结果截图目录
+│   ├── 标准示例加密测试.png       # 标准测试加密结果
+│   ├── 标准示例解密测试.png       # 标准测试解密结果
+│   ├── 随机测试样例加密.png       # 随机测试加密结果
+│   ├── 随机测试样例解密.png       # 随机测试解密结果
+│   ├── 性能对比测试1.png         # 性能对比测试结果1
+│   ├── 性能对比测试2.png         # 性能对比测试结果2
+│   └── 命令行使用测试.png         # 命令行使用测试
+├── 参考文档/                      # 算法标准文档
+│   ├── 【SM4算法国标】GBT32907-2016标准.pdf
+│   ├── 20250707-sm4-public.pdf
+│   ├── 20250710-fu-SM2-public.pdf
+│   └── 20250710-fu-SM3-public.pdf
+├── testall.py                    # 自动化性能测试脚本
+├── SM4_Basic.exe                 # 根目录可执行文件
+├── SM4_TT.exe                    # 根目录可执行文件
+├── SM4_AESNI.exe                 # 根目录可执行文件
+└── README.md                     # 项目说明文档
 ```
 
 #### 6.2 编译与运行
