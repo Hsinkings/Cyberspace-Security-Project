@@ -1,9 +1,7 @@
 {
   "ExpandedNodes": [
     "",
-    "\\SM4",
-    "\\x64",
-    "\\x64\\Debug"
+    "\\SM4"
   ],
   "SelectedNode": "\\SM4\\main.cpp",
   "PreviewInSolutionExplorer": false

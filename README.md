@@ -257,7 +257,8 @@ Project1-SM4/
 │   ├── key.txt         # 密钥文件
 │   └── *.txt           # 其他测试文件
 ├── testall.py          # 性能测试脚本
-├── testresult.png(s)   # 算法正确性及性能测试结果截图
+├── Tests/              # 算法正确性及性能测试结果截图
+│   └── testresult.png(s)   
 └── README.md           # 项目说明
 ```
 
@@ -265,7 +266,11 @@ Project1-SM4/
 - 基础实现：`g++ -O2 src/basic/*.cpp main.cpp -o sm4_basic`
 - T-Table实现：`g++ -O2 src/ttable/*.cpp main.cpp -o sm4_tt`
 - AES-NI实现：`g++ -O2 -mavx2 -maes src/aesni/*.cpp main.cpp -o sm4_aesni`
-- 运行示例：`./sm4_aesni -e plaintext.bin ciphertext.bin key.bin`（-e表示加密，-d表示解密）
+- （上述操作如若在Visual Studio下运行可以直接跳过正常使用。推荐使用下方命令行运行进行测试）
+- 运行示例：
+  - `./SM4_Basic.exe -e/-d plaintext.txt（路径） ciphertext.txt（路径） key.txt（路径）`（-e表示加密，-d表示解密）
+  - `./SM4_TT.exe -e/-d plaintext.txt（路径） ciphertext.txt（路径） key.txt（路径）`（-e表示加密，-d表示解密）
+  - `./SM4_AESNI.exe -e/-d plaintext.txt（路径） ciphertext.txt（路径） key.txt（路径）`（-e表示加密，-d表示解密）
 
 ### 7. 结论与展望
 

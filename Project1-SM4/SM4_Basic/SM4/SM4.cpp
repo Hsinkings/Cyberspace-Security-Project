@@ -1,6 +1,7 @@
-#include "SM4.h"
+﻿#include "SM4.h"
 #include <cstring>
 #include <iostream>
+#include <fstream>   
 
 //S盒定义（依据：GB/T32907-2016标准）
 const uint8_t SBOX[256] = {

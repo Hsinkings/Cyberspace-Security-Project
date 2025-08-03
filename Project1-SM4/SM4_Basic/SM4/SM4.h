@@ -1,8 +1,7 @@
-#ifndef SM4_H
+﻿#ifndef SM4_H
 #define SM4_H
 
 #include <cstdint>
-#include <fstream>
 #include <string>
 
 //SM4算法核心组件定义
