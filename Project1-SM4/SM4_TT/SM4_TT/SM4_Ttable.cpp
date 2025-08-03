@@ -219,7 +219,7 @@ static void write_block(std::ofstream& file, const uint32_t block[4]) {
     file.write(reinterpret_cast<char*>(buffer), 16);
 }
 
-//文件加密（ECB模式）
+//文件加密
 bool encrypt_file(const std::string& plaintext_path, const std::string& key_path, const std::string& ciphertext_path) {
     //读取密钥文件（16字节）
     std::ifstream key_file(key_path, std::ios::binary);
@@ -253,7 +253,7 @@ bool encrypt_file(const std::string& plaintext_path, const std::string& key_path
     return true;
 }
 
-//文件解密（ECB模式）
+//文件解密
 bool decrypt_file(const std::string& ciphertext_path, const std::string& key_path, const std::string& plaintext_path) {
     //读取密钥文件（16字节）
     std::ifstream key_file(key_path, std::ios::binary);
