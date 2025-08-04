@@ -1,15 +1,61 @@
-# 山东大学网络空间安全学院 - 网络空间安全创新创业实践课程项目
 
-## Project1-SM4算法实现与优化实验报告
+## SM4算法实现与优化实验报告
 
 ### 1. 项目概述
 
-本项目基于《GB/T32907-2016 信息安全技术 SM4分组密码算法》标准，实现并优化了SM4分组密码算法。SM4作为我国商用密码标准中的分组密码算法，广泛应用于金融、政务等领域的信息加密保护，算法采用 128 位分组长度与 128 位密钥长度，通过 32 轮非线性迭代的非平衡 Feistel 结构实现加密解密。其核心由 S 盒（8 比特非线性置换）、线性变换 L/L' 及轮函数 F 构成，加密与解密结构相同仅轮密钥使用顺序相反；轮密钥通过密钥扩展算法由主密钥结合系统参数 FK 和固定参数 CK 生成。该算法安全性高、实现灵活，广泛应用于商用密码领域，可通过基础实现、T-Table 预计算优化或 AES-NI 硬件指令加速等方式部署，满足不同场景的性能与安全需求。
+本项目基于《GB/T32907-2016 信息安全技术 SM4分组密码算法》标准，实现并优化了SM4分组密码算法。SM4作为我国商用密码标准中的分组密码算法，广泛应用于金融、政务等领域的信息加密保护，采用 128 位分组长度与 128 位密钥长度，通过 32 轮非线性迭代的非平衡 Feistel 结构实现加密解密。其核心由 S 盒（8 比特非线性置换）、线性变换 L/L' 及轮函数 F 构成，加密与解密结构相同仅轮密钥使用顺序相反；轮密钥通过密钥扩展算法由主密钥结合系统参数 FK 和固定参数 CK 生成。该算法安全性高、实现灵活，广泛应用于商用密码领域，可通过基础实现、T-Table 预计算优化或 AES-NI 硬件指令加速等方式部署，满足不同场景的性能与安全需求。
 
 项目设计并实现了多种不同优化级别的版本，从基础实现到硬件加速，系统探索了密码算法在软件层面的优化路径，部分优化算法列举如下：
 - **SM4_Basic**：严格遵循GB/T32907-2016标准的基础实现，作为算法正确性验证的基准
 - **SM4_TT**：基于T-Table预计算技术的优化实现，通过空间换时间提升执行效率
 - **SM4_AESNI**：利用Intel AES-NI指令集与SIMD并行技术的硬件加速实现，面向高性能场景
+
+### 1.1 项目目录结构详解
+
+本项目采用模块化设计，包含三个独立的SM4实现版本，每个版本都有完整的源代码、编译配置和可执行文件。项目结构如下：
+
+#### 核心实现模块
+- **SM4_Basic/**：基础实现模块
+  - `SM4_Basic/SM4/`：源代码目录，包含SM4.h、SM4.cpp、main.cpp
+  - `SM4_Basic/SM4_Basic.sln`：Visual Studio解决方案文件
+  - `SM4_Basic.exe`：编译后的可执行文件（根目录）
+  - `SM4_Basic/x64/Debug/`：编译输出目录，包含调试版本可执行文件
+
+- **SM4_TT/**：T-Table优化实现模块
+  - `SM4_TT/SM4_TT/`：源代码目录，包含SM4_Ttable.h、SM4_Ttable.cpp、main.cpp
+  - `SM4_TT/SM4_TT.sln`：Visual Studio解决方案文件
+  - `SM4_TT.exe`：编译后的可执行文件（根目录）
+  - `SM4_TT/x64/Debug/`：编译输出目录，包含调试版本可执行文件
+
+- **SM4_AESNI/**：AES-NI硬件加速实现模块
+  - `SM4_AESNI/SM4_AESNI/`：源代码目录，包含SM4_AESNI.h、SM4_AESNI.cpp、main.cpp
+  - `SM4_AESNI/SM4_AESNI.sln`：Visual Studio解决方案文件
+  - `SM4_AESNI.exe`：编译后的可执行文件（根目录）
+  - `SM4_AESNI/x64/Debug/`：编译输出目录，包含调试版本可执行文件
+
+#### 测试与验证模块
+- **Tests/**：测试文件目录
+  - `Tests/plaintext.txt`：测试用明文文件
+  - `Tests/key.txt`：测试用密钥文件
+  - `Tests/ciphertext_*.txt`：各版本加密结果文件
+  - `Tests/Sample_*.txt`：标准测试向量文件
+
+- **Test_results/**：测试结果截图目录
+  - 包含算法正确性验证、性能对比测试等截图文件
+
+#### 工具与文档
+- **testall.py**：自动化性能测试脚本，用于批量测试三种实现的性能
+- **参考文档/**：算法标准文档和参考资料
+  - `参考文档/【SM4算法国标】GBT32907-2016标准.pdf`：SM4算法国家标准
+  - `参考文档/20250707-sm4-public.pdf`：SM4算法公开文档
+  - `参考文档/20250710-fu-SM2-public.pdf`：SM2算法文档
+  - `参考文档/20250710-fu-SM3-public.pdf`：SM3算法文档
+
+#### 编译输出目录
+每个实现模块都包含完整的编译输出目录结构：
+- `x64/Debug/`：64位调试版本编译输出
+- `x64/Release/`：64位发布版本编译输出（如需要）
+- 包含.obj、.pdb、.ilk等编译中间文件和调试信息
 
 ### 2. SM4算法核心原理（基于GB/T32907-2016标准）
 
@@ -204,14 +250,24 @@ void SM4_AESNI_enc4blocks(const uint8_t* plaintext, uint8_t* ciphertext, const u
 - 软件：Visual Studio 2022，C++17，优化级别O3
 - 测试用例：100MB随机明文，密钥固定为GB/T32907-2016附录A中的示例密钥
 
-#### 4.2 性能数据
+#### 4.2 终端测试用时数据
+| 测试轮次 | SM4_Basic用时(ms) | SM4_TT用时(ms) | SM4_AESNI用时(ms) | 性能提升比例 |
+|----------|------------------|----------------|-------------------|-------------|
+| 第1轮测试 | 621.10          | 563.17         | 387.38            | TT: 1.10x, AESNI: 1.60x |
+| 第2轮测试 | 726.38          | 482.79         | 393.25            | TT: 1.50x, AESNI: 1.85x |
+| 第3轮测试 | 671.40          | 582.29         | 433.77            | TT: 1.15x, AESNI: 1.55x |
+| 第4轮测试 | 697.60          | 511.85         | 417.52            | TT: 1.36x, AESNI: 1.67x |
+| 第5轮测试 | 811.76          | 452.08         | 400.49            | TT: 1.80x, AESNI: 2.03x |
+| 平均用时 | 705.65          | 518.44         | 406.68            | TT: 1.36x, AESNI: 1.73x |
+
+#### 4.3 理论性能数据
 | 实现方式       | 吞吐量（MB/s） | 每字节周期数（cycles/byte） | 内存开销 | 侧信道安全性 |
 |----------------|---------------|---------------------------|---------|-------------|
 | SM4_Basic      | 125           | 30.7                      | <1KB    | 高（无缓存差异） |
 | SM4_TT         | 312           | 12.3                      | 4KB     | 中（需防护措施） |
 | SM4_AESNI（4块并行） | 1042        | 3.6                       | <1KB    | 高（硬件指令无缓存差异） |
 
-#### 4.3 结果分析
+#### 4.4 结果分析
 - **T-Table优化**：通过预计算将S盒与线性变换合并，减少了 runtime 计算量，吞吐量提升2.5倍，但需注意缓存攻击风险。
 - **AES-NI优化**：硬件指令直接加速S盒变换，SIMD并行进一步提升效率，吞吐量达到基础实现的8.3倍，且因指令级并行无缓存差异，安全性优于T-Table。
 - **扩展性**：随着寄存器宽度增加（32→64→128→256位），并行处理能力增强，每字节周期数持续下降，验证了SIMD技术的有效性。
@@ -234,38 +290,93 @@ void SM4_AESNI_enc4blocks(const uint8_t* plaintext, uint8_t* ciphertext, const u
 #### 6.1 项目结构
 ```
 Project1-SM4/
-├── SM4_Basic/          # 基础实现
-│   ├── SM4/
-│   │   ├── SM4.h       # 头文件
-│   │   ├── SM4.cpp     # 实现文件
-│   │   └── main.cpp    # 主程序
-│   └── SM4_Basic.exe   # 可执行文件
-├── SM4_TT/             # T-Table优化实现
-│   ├── SM4_TT/
-│   │   ├── SM4_Ttable.h
-│   │   ├── SM4_Ttable.cpp
-│   │   └── main.cpp
-│   └── SM4_TT.exe
-├── SM4_AESNI/          # AES-NI优化实现
-│   ├── SM4_AESNI/
-│   │   ├── SM4_AESNI.h
-│   │   ├── SM4_AESNI.cpp
-│   │   └── main.cpp
-│   └── SM4_AESNI.exe
-├── Tests/              # 测试文件
-│   ├── plaintext.txt   # 明文文件
-│   ├── key.txt         # 密钥文件
-│   └── *.txt           # 其他测试文件
-├── testall.py          # 性能测试脚本
-├── testresult.png(s)   # 算法正确性及性能测试结果截图
-└── README.md           # 项目说明
+├── SM4_Basic/                    # 基础实现模块
+│   ├── SM4/                      # 源代码目录
+│   │   ├── SM4.h                 # 头文件
+│   │   ├── SM4.cpp               # 实现文件
+│   │   ├── main.cpp              # 主程序
+│   │   ├── SM4.vcxproj           # Visual Studio项目文件
+│   │   ├── SM4.vcxproj.filters   # 项目过滤器
+│   │   └── SM4.vcxproj.user     # 用户配置文件
+│   ├── SM4_Basic.sln             # Visual Studio解决方案
+│   ├── x64/                      # 64位编译输出
+│   │   └── Debug/                # 调试版本
+│   │       ├── SM4_Basic.exe     # 可执行文件
+│   │       ├── *.obj             # 目标文件
+│   │       ├── *.pdb             # 调试信息
+│   │       └── *.tlog/           # 编译日志
+│   └── SM4_Basic.exe             # 根目录可执行文件
+├── SM4_TT/                       # T-Table优化实现模块
+│   ├── SM4_TT/                   # 源代码目录
+│   │   ├── SM4_Ttable.h          # 头文件
+│   │   ├── SM4_Ttable.cpp        # 实现文件
+│   │   ├── main.cpp              # 主程序
+│   │   ├── SM4_TT.vcxproj       # Visual Studio项目文件
+│   │   ├── SM4_TT.vcxproj.filters
+│   │   └── SM4_TT.vcxproj.user
+│   ├── SM4_TT.sln                # Visual Studio解决方案
+│   ├── x64/                      # 64位编译输出
+│   │   └── Debug/                # 调试版本
+│   │       ├── SM4_TT.exe        # 可执行文件
+│   │       ├── *.obj             # 目标文件
+│   │       ├── *.pdb             # 调试信息
+│   │       └── *.tlog/           # 编译日志
+│   └── SM4_TT.exe                # 根目录可执行文件
+├── SM4_AESNI/                    # AES-NI硬件加速实现模块
+│   ├── SM4_AESNI/                # 源代码目录
+│   │   ├── SM4_AESNI.h           # 头文件
+│   │   ├── SM4_AESNI.cpp         # 实现文件
+│   │   ├── main.cpp              # 主程序
+│   │   ├── SM4_AESNI.vcxproj    # Visual Studio项目文件
+│   │   ├── SM4_AESNI.vcxproj.filters
+│   │   └── SM4_AESNI.vcxproj.user
+│   ├── SM4_AESNI.sln             # Visual Studio解决方案
+│   ├── x64/                      # 64位编译输出
+│   │   └── Debug/                # 调试版本
+│   │       ├── SM4_AESNI.exe     # 可执行文件
+│   │       ├── *.obj             # 目标文件
+│   │       ├── *.pdb             # 调试信息
+│   │       └── *.tlog/           # 编译日志
+│   └── SM4_AESNI.exe             # 根目录可执行文件
+├── Tests/                        # 测试文件目录
+│   ├── plaintext.txt             # 测试明文文件
+│   ├── key.txt                   # 测试密钥文件
+│   ├── ciphertext_basic.txt      # Basic版本加密结果
+│   ├── ciphertext_basic_dec.txt  # Basic版本解密结果
+│   ├── ciphertext_Ttable.txt     # TT版本加密结果
+│   ├── ciphertext_Ttable_dec.txt # TT版本解密结果
+│   ├── Sample.txt                # 标准测试向量
+│   ├── Sample_AESNIenc.txt       # AESNI版本加密结果
+│   └── Sample_AESNIdec.txt       # AESNI版本解密结果
+├── Test_results/                  # 测试结果截图目录
+│   ├── 标准示例加密测试.png       # 标准测试加密结果
+│   ├── 标准示例解密测试.png       # 标准测试解密结果
+│   ├── 随机测试样例加密.png       # 随机测试加密结果
+│   ├── 随机测试样例解密.png       # 随机测试解密结果
+│   ├── 性能对比测试1.png         # 性能对比测试结果1
+│   ├── 性能对比测试2.png         # 性能对比测试结果2
+│   └── 命令行使用测试.png         # 命令行使用测试
+├── 参考文档/                      # 算法标准文档
+│   ├── 【SM4算法国标】GBT32907-2016标准.pdf
+│   ├── 20250707-sm4-public.pdf
+│   ├── 20250710-fu-SM2-public.pdf
+│   └── 20250710-fu-SM3-public.pdf
+├── testall.py                    # 自动化性能测试脚本
+├── SM4_Basic.exe                 # 根目录可执行文件
+├── SM4_TT.exe                    # 根目录可执行文件
+├── SM4_AESNI.exe                 # 根目录可执行文件
+└── README.md                     # 项目说明文档
 ```
 
 #### 6.2 编译与运行
 - 基础实现：`g++ -O2 src/basic/*.cpp main.cpp -o sm4_basic`
 - T-Table实现：`g++ -O2 src/ttable/*.cpp main.cpp -o sm4_tt`
 - AES-NI实现：`g++ -O2 -mavx2 -maes src/aesni/*.cpp main.cpp -o sm4_aesni`
-- 运行示例：`./sm4_aesni -e plaintext.bin ciphertext.bin key.bin`（-e表示加密，-d表示解密）
+- （上述操作如若在Visual Studio下运行可以直接跳过正常使用。推荐使用下方命令行运行进行测试）
+- 运行示例：
+  - `./SM4_Basic.exe -e/-d plaintext.txt（路径） ciphertext.txt（路径） key.txt（路径）`（-e表示加密，-d表示解密）
+  - `./SM4_TT.exe -e/-d plaintext.txt（路径） ciphertext.txt（路径） key.txt（路径）`（-e表示加密，-d表示解密）
+  - `./SM4_AESNI.exe -e/-d plaintext.txt（路径） ciphertext.txt（路径） key.txt（路径）`（-e表示加密，-d表示解密）
 
 ### 7. 结论与展望
 
@@ -279,7 +390,7 @@ Project1-SM4/
 - 跨平台优化：针对ARM架构的NEON指令集开发对应优化版本；
 - 安全性增强：加入抗功耗分析的掩码技术，适应嵌入式安全场景。
 
-本项目通过结合SM4算法规范与山东大学网络空间安全学院创新创业实践课程知识点，完成了SM4算法的基础版本、多个优化版本的工程实现，更揭示了密码算法"标准-实现-优化"的完整链路，为商用密码的工程化应用提供了实践参考。
+本项目结合SM4算法规范文件、山东大学网络空间安全创新创业实践课程内容，完成了SM4算法的基础架构、多种优化算法的工程实现，揭示了密码算法"标准-实现-优化"的完整链路，为商用密码的工程化应用提供了实践参考。
 
 **参考文献**：
 1. GB/T32907-2016，《信息安全技术 SM4分组密码算法》
