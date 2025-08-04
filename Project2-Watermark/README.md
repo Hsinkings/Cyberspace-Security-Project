@@ -29,7 +29,6 @@
 ```
 Project2-Watermark/
 ├── main.py                    # 主程序入口
-├── test_project.py            # 项目测试脚本
 ├── test_watermark_fix.py      # 水印修复测试脚本
 ├── README.md                 # 项目说明
 ├── Watermark/                # 水印核心模块
