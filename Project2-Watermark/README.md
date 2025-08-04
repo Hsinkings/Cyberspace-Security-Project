@@ -3,7 +3,10 @@
 
 ## 1. 图像水印系统简介
 
-本项目是一个基于DCT（离散余弦变换）的图像水印系统，实现了图像水印的嵌入、提取、检测和鲁棒性测试功能。系统采用模块化设计架构，具有良好的可扩展性和可维护性，适用于数字图像版权保护、身份认证等应用场景。
+随着数字媒体技术的飞速发展与互联网的普及，数字图像作为信息传播的重要载体，其版权保护与内容认证需求日益凸显。传统的版权保护机制在数字环境下存在易复制、易篡改、溯源困难等问题，数字水印技术应运而生，成为解决上述问题的关键技术之一。
+本项目旨在研发一套基于离散余弦变换（Discrete Cosine Transform, DCT）的频域图像水印系统。该系统通过在图像的频域空间嵌入特定标识信息（水印），实现对数字图像的版权声明、来源追踪与完整性验证。相较于空域水印技术，基于 DCT 的频域水印技术能够在保证水印不可见性的同时，显著提升水印对常见信号处理与恶意攻击的抵抗能力，具有更高的实用价值与研究意义。
+系统采用模块化设计思想，将核心功能划分为水印处理、鲁棒性测试、质量评估等独立模块，各模块通过标准化接口实现协同工作，确保了系统架构的清晰性、可扩展性与可维护性。通过该系统，用户可完成从水印嵌入、提取、检测到鲁棒性评估的全流程操作，为数字图像版权保护、内容认证、真伪鉴别等应用场景提供完整的技术解决方案。
+本系统的研发与优化结合山东大学网络空间安全创新创业实践课程知识与图像水印相关文献资料，不仅验证了 DCT 域水印算法的有效性，更为数字媒体安全领域的技术应用提供了可参考的实践范例，具有重要的理论研究价值与实际应用前景。
 
 ## 1.1 项目特性
 
@@ -873,3 +876,12 @@ PS G:\Cyber_practice\Project\Project2-Watermark>
 - 良好的可维护性和扩展性
 
 系统在信号处理和图像增强攻击下表现优异，在几何攻击下也有一定的鲁棒性。项目已经可以正常运行，并且具有良好的实用价值和研究价值。 
+
+## 参考文献
+[1] 南京航空航天大学。基于 FPGA 的 JPEG 图像数字水印系统 [R]. 南京：南京航空航天大学
+[2] 基于小波变换的数字水印算法研究实践报告 (https://www.renrendoc.com/paper/269337835.html)
+[3] 楼偶俊，祁瑞华，邬俊，等。数字水印技术及其应用 [M]. 北京：清华大学出版社，2018.
+[4] Lin P L, et al. A hierarchical digital watermarking method for image tamper detection and recovery [J]. Pattern Recognition.
+[5] Lee T Y, Lin S D. Dual watermark for image tamper detection and recovery [J]. Pattern Recognition.
+[6] https://blog.csdn.net/m0_57702748/article/details/131483653?ops_request_misc=&request_id=&biz_id=102&utm_term=%E5%9B%BE%E5%83%8F%E6%B0%B4%E5%8D%B0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-1-131483653.142^v102^control&spm=1018.2226.3001.4187
+[7] https://blog.csdn.net/m0_52363973/article/details/131115784?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522b5734f0f87f2809e79cf146177c8227e%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=b5734f0f87f2809e79cf146177c8227e&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-131115784-null-null.142^v102^control&utm_term=%E5%9B%BE%E5%83%8F%E6%B0%B4%E5%8D%B0&spm=1018.2226.3001.4187
