@@ -859,10 +859,17 @@ PSNR: 30.11 dB
 
 ## 参考文献
 [1] 南京航空航天大学。基于 FPGA 的 JPEG 图像数字水印系统 [R]. 南京：南京航空航天大学
+
 [2] 基于小波变换的数字水印算法研究实践报告 (https://www.renrendoc.com/paper/269337835.html)
+
 [3] 楼偶俊，祁瑞华，邬俊，等。数字水印技术及其应用 [M]. 北京：清华大学出版社，2018.
+
 [4] Lin P L, et al. A hierarchical digital watermarking method for image tamper detection and recovery [J]. Pattern Recognition.
+
 [5] Lee T Y, Lin S D. Dual watermark for image tamper detection and recovery [J]. Pattern Recognition.
+
 [6] https://blog.csdn.net/m0_57702748/article/details/131483653?ops_request_misc=&request_id=&biz_id=102&utm_term=%E5%9B%BE%E5%83%8F%E6%B0%B4%E5%8D%B0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-1-131483653.142^v102^control&spm=1018.2226.3001.4187
+
 [7] https://blog.csdn.net/m0_52363973/article/details/131115784?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522b5734f0f87f2809e79cf146177c8227e%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=b5734f0f87f2809e79cf146177c8227e&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-131115784-null-null.142^v102^control&utm_term=%E5%9B%BE%E5%83%8F%E6%B0%B4%E5%8D%B0&spm=1018.2226.3001.4187
+
 [8] Ma Z, Zhang W, Fang H, et al. Local geometric distortions resilient watermarking scheme based on symmetry[J]. IEEE Transactions on Circuits and Systems for Video Technology, 2021, 31(12): 4826-4839. DOI: 10.1109/TCSVT.2021.3055255.
