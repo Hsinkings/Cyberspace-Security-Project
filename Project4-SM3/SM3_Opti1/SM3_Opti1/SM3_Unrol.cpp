@@ -7,9 +7,9 @@
  * 根据GB/T 32905-2016标准定义的8个32位初始值
  * 使用常量数组存储，便于编译器优化
  */
-const uint32_t SM3_IV[SM3_STATE_WORDS] = {
-    0x7380166F, 0x4914B2B9, 0x172442D7, 0xDA8A0600,
-    0xA96F30BC, 0x163138AA, 0xE38DEE4D, 0xB0FB0E4E
+    const uint32_t SM3_IV[SM3_STATE_WORDS] = {
+        0x7380166F, 0x4914B2B9, 0x172442D7, 0xDA8A0600,
+        0xA96F30BC, 0x163138AA, 0xE38DEE4D, 0xB0FB0E4E
 };
 
 /**
@@ -28,7 +28,7 @@ SM3::SM3() {
     F = SM3_IV[5];
     G = SM3_IV[6];
     H = SM3_IV[7];
-    
+
     //初始化计数器和缓冲区
     total_bits = 0;     //已处理的总比特数
     buffer_len = 0;     //当前缓冲区中的字节数
@@ -113,10 +113,6 @@ void SM3::compress(const uint8_t* block) {
         d = c; c = ROTL32(b, 9); b = a; a = TT1;
         h = g; g = ROTL32(f, 19); f = e; e = P0(TT2);
         j++;
-
-        //注意：此处为简化展示，实际实现应展开完整64轮
-        //完整的展开版本会包含16个类似的代码块，每块处理4轮
-        //这样可以最大化减少循环控制开销
     }
 
     //第五步：更新状态变量
@@ -141,7 +137,7 @@ void SM3::compress(const uint8_t* block) {
 void SM3::update(const uint8_t* data, size_t len) {
     //快速路径：空数据直接返回
     if (len == 0) return;
-    
+
     //累计已处理的比特数
     total_bits += len * 8;
 
@@ -224,7 +220,7 @@ std::vector<uint8_t> SM3::final() {
     for (int i = 0; i < 8; ++i) {
         buffer[56 + i] = static_cast<uint8_t>(len >> (8 * (7 - i)));
     }
-    
+
     //步骤4：压缩最后一个块
     compress(buffer);
 
@@ -232,7 +228,7 @@ std::vector<uint8_t> SM3::final() {
     //使用优化的字节序转换函数
     std::vector<uint8_t> result(SM3_DIGEST_SIZE);
     uint32_t* hash = reinterpret_cast<uint32_t*>(result.data());
-    
+
     //将8个32位状态变量转换为32字节输出（大端序）
     hash[0] = le_to_be32(A);
     hash[1] = le_to_be32(B);
@@ -263,20 +259,20 @@ std::vector<uint8_t> SM3::hash(const std::string& data) {
  * 1. 重用SM3实例：减少构造开销
  * 2. 引用传递：避免不必要的拷贝
  * 3. 条件重置：只在需要时重置状态
- * 
+ *
  * 适用于性能测试和批量哈希计算场景
  */
 void SM3::batch_hash(const std::string& data, std::vector<uint8_t>& digest, int iterations) {
     if (iterations <= 0) return;
-    
+
     //创建SM3实例
     SM3 sm3;
-    
+
     //执行指定次数的哈希计算
     for (int i = 0; i < iterations; ++i) {
         sm3.update(data);
         digest = sm3.final();
-        
+
         //优化：最后一次不需要重置
         if (i != iterations - 1) {
             sm3 = SM3();  //重置上下文
