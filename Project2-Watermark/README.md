@@ -3,7 +3,10 @@
 
 ## 1. 图像水印系统简介
 
-本项目是一个基于DCT（离散余弦变换）的图像水印系统，实现了图像水印的嵌入、提取、检测和鲁棒性测试功能。系统采用模块化设计架构，具有良好的可扩展性和可维护性，适用于数字图像版权保护、身份认证等应用场景。
+随着数字媒体技术的飞速发展与互联网的普及，数字图像作为信息传播的重要载体，其版权保护与内容认证需求日益凸显。传统的版权保护机制在数字环境下存在易复制、易篡改、溯源困难等问题，数字水印技术应运而生，成为解决上述问题的关键技术之一。
+本项目旨在研发一套基于离散余弦变换（Discrete Cosine Transform, DCT）的频域图像水印系统。该系统通过在图像的频域空间嵌入特定标识信息（水印），实现对数字图像的版权声明、来源追踪与完整性验证。相较于空域水印技术，基于 DCT 的频域水印技术能够在保证水印不可见性的同时，显著提升水印对常见信号处理与恶意攻击的抵抗能力，具有更高的实用价值与研究意义。
+系统采用模块化设计思想，将核心功能划分为水印处理、鲁棒性测试、质量评估等独立模块，各模块通过标准化接口实现协同工作，确保了系统架构的清晰性、可扩展性与可维护性。通过该系统，用户可完成从水印嵌入、提取、检测到鲁棒性评估的全流程操作，为数字图像版权保护、内容认证、真伪鉴别等应用场景提供完整的技术解决方案。
+本系统的研发与优化结合山东大学网络空间安全创新创业实践课程知识与图像水印相关文献资料，不仅验证了 DCT 域水印算法的有效性，更为数字媒体安全领域的技术应用提供了可参考的实践范例，具有重要的理论研究价值与实际应用前景。
 
 ## 1.1 项目特性
 
@@ -28,7 +31,6 @@ Project2-Watermark/
 ├── main.py                    # 主程序入口
 ├── test_project.py            # 项目测试脚本
 ├── test_watermark_fix.py      # 水印修复测试脚本
-├── requirements.txt           # 项目依赖
 ├── README.md                 # 项目说明
 ├── Watermark/                # 水印核心模块
 │   ├── __init__.py
@@ -120,10 +122,6 @@ NCC = Σ(x_i * y_i) / √(Σx_i² * Σy_i²)
 git clone <repository-url>
 cd Project2-Watermark
 
-# 安装依赖
-pip install -r requirements.txt
-```
-
 ## 3. 使用方法
 
 ### 3.1 快速开始
@@ -133,19 +131,9 @@ pip install -r requirements.txt
 python main.py
 ```
 
-2. **运行项目测试**
-```bash
-python test_project.py
-```
-
-3. **运行水印修复测试**
+2. **运行水印修复测试**
 ```bash
 python test_watermark_fix.py
-```
-
-4. **运行单元测试**
-```bash
-python -m Robustness_Test.Units_test
 ```
 
 ### 3.2 基本功能演示
@@ -647,35 +635,49 @@ PS G:\Cyber_practice\Project\Project2-Watermark> & C:/Users/qc/AppData/Local/Pro
 以下是运行`python test_watermark_fix.py`的完整终端输出：
 
 ```bash
-PS G:\Cyber_practice\Project\Project2-Watermark> & C:/Users/qc/AppData/Local/Programs/Python/Python312/python.exe g:/Cyber_practice/Project/Project2-Watermark/test_watermark_fix.py
-水印修复测试
+PS G:\Cyber_practice\Project\Project2-Watermark> & C:/Users/qc/AppData/Local/Programs/Python/Python312/python.exe g:/Cyber_practice/Project/Project2-Watermark/test_watermark.py
+水印算法修复测试
 ==================================================
+=== 水印嵌入和提取一致性测试 ===
+使用水印: Watermark1.png
+水印嵌入成功
+PSNR: 30.11 dB
+水印提取成功
+相似度: 0.9206
+相似度优秀 - 算法工作正常
 
-=== 测试1: 嵌入和提取一致性 ===
-嵌入水印到测试图像...
-提取水印...
-计算相似度: 0.9181
-计算PSNR: 30.10 dB
-结果: 嵌入和提取一致性良好
+=== 水印检测功能测试 ===
 
-=== 测试2: 相似度计算正确性 ===
-测试相同图像相似度: 1.0000
-测试不同图像相似度: 0.0000
-测试随机图像相似度: 0.0000
-结果: 相似度计算正确
+检测图像: gradient_Watermark3_watermarked.png
+水印 Watermark1.png 相似度: 0.0614
+水印 Watermark2.png 相似度: 0.0000
+水印 Watermark3.jpg 相似度: 0.9644
+检测到水印: Watermark3.jpg
+相似度: 0.9644
+检测结果: 优秀
 
-=== 测试3: 水印检测功能 ===
+检测图像: natural_Watermark1_watermarked.png
+水印 Watermark1.png 相似度: 0.9270
+水印 Watermark2.png 相似度: 0.0000
+水印 Watermark3.jpg 相似度: 0.0774
 检测到水印: Watermark1.png
-相似度: 0.9181
-结果: 水印检测功能正常
+相似度: 0.9270
+检测结果: 优秀
 
-=== 测试4: 非水印图像检测 ===
-检测到水印: Watermark2.png
-相似度: 0.0000
-结果: 非水印图像检测正常
+检测图像: noise_Watermark1_watermarked.png
+水印 Watermark1.png 相似度: 0.0741
+水印 Watermark2.png 相似度: 0.0083
+水印 Watermark3.jpg 相似度: 0.0000
+检测到水印: Watermark1.png
+相似度: 0.0741
+检测结果: 较差
 
-所有测试通过！
-PS G:\Cyber_practice\Project\Project2-Watermark>
+=== 相似度计算测试 ===
+相同图像相似度: 1.0000 (应该接近1.0)
+不同图像相似度: 0.0000 (应该较低)
+随机噪声相似度: 0.0000 (应该很低)
+
+测试完成！
 ```
 
 ## 6. 实验结果分析
@@ -760,50 +762,32 @@ PS G:\Cyber_practice\Project\Project2-Watermark>
 - 攻击结果: `{攻击类型}_attacked.png`
 - 测试报告: `{图像类型}_{水印名称}_robustness_report.txt`
 
-## 9. 代码规范
+## 9. 项目优势
 
-### 9.1 注释规范
-- 所有注释使用`#`开头
-- 不使用`#`类型的文档字符串
-- 不使用`@`装饰器
-- 注释详细说明参数、返回值和功能
-
-### 9.2 命名规范
-- 类名使用PascalCase
-- 函数和变量使用snake_case
-- 常量使用UPPER_CASE
-
-### 9.3 模块组织
-- 按功能划分模块
-- 每个模块有清晰的职责
-- 避免循环导入
-
-## 10. 项目优势
-
-### 10.1 技术优势
+### 9.1 技术优势
 1. **算法先进**: 基于DCT的频域图像水印算法
 2. **鲁棒性强**: 支持多种攻击测试，在信号处理攻击下表现优异
 3. **质量可控**: 提供PSNR和相似度等多种质量评估指标
 4. **参数可调**: 量化因子可动态调整
 
-### 10.2 代码优势
+### 9.2 代码优势
 1. **结构清晰**: 模块化设计，职责分明
 2. **注释详细**: 所有代码都有详细注释
 3. **易于维护**: 规范的代码风格
 4. **可扩展性**: 易于添加新功能
 
-### 10.3 实验优势
+### 9.3 实验优势
 1. **测试全面**: 包含多种图像类型和攻击方式
 2. **结果可靠**: 详细的实验数据和分析
 3. **现象发现**: 发现了攻击顺序对结果的影响
 4. **性能优秀**: 在多种攻击下保持高相似度
 
-### 10.4 相比数字水印的优势
-1. **视觉直观**: 水印是图像，便于验证
+### 9.4 相比数字水印的优势
+1. **视觉直观**: 水印是图像（以三种山东大学校徽为例，其中两个为png格式、一个为jpg格式），便于验证
 2. **信息丰富**: 可以嵌入复杂的图像信息
 3. **抗攻击性强**: 图像水印对某些攻击更鲁棒
 
-## 11. 注意事项
+## 10. 注意事项
 
 1. **图像格式**: 确保输入图像为常见格式（PNG、JPG等）
 2. **图像尺寸**: 建议图像尺寸为8的倍数（DCT块大小）
@@ -814,9 +798,9 @@ PS G:\Cyber_practice\Project\Project2-Watermark>
 7. **水印大小**: 水印图像不宜过大，建议64x64像素
 8. **载体图像**: 载体图像应足够大以容纳水印
 
-## 12. 故障排除
+## 11. 故障排除
 
-### 12.1 常见问题
+### 11.1 常见问题
 1. **模块导入错误**: 检查Python路径和项目结构
 2. **图像加载失败**: 检查图像文件路径和格式
 3. **内存不足**: 减少图像尺寸或批量处理
@@ -826,15 +810,15 @@ PS G:\Cyber_practice\Project\Project2-Watermark>
 7. **嵌入失败**: 检查载体图像是否足够大，调整量化因子参数
 8. **检测效果差**: 检查水印图像质量，调整相似度阈值
 
-### 12.2 调试建议
+### 11.2 调试建议
 1. 运行`test_watermark_fix.py`检查基本功能
 2. 查看详细的错误信息和日志
 3. 逐步测试各个模块的功能
 4. 检查水印图像的格式和尺寸
 
-## 13. 后续改进建议
+## 12. 后续改进建议
 
-### 13.1 功能扩展
+### 12.1 功能扩展
 1. 支持彩色图像水印
 2. 添加更多水印算法（DWT、SVD等）
 3. 实现批量处理功能
@@ -842,26 +826,26 @@ PS G:\Cyber_practice\Project\Project2-Watermark>
 5. 支持视频水印
 6. 自适应嵌入：根据图像内容调整嵌入策略
 
-### 13.2 性能优化
+### 12.2 性能优化
 1. 优化DCT计算性能
 2. 添加并行处理支持
 3. 优化内存使用
 4. 提高处理速度
 
-### 13.3 测试完善
+### 12.3 测试完善
 1. 增加更多单元测试
 2. 添加性能测试
 3. 完善边界条件测试
 4. 添加集成测试
 5. 增加更多攻击类型
 
-### 13.4 算法改进
+### 12.4 算法改进
 1. 改进几何攻击的鲁棒性
 2. 优化量化调制策略
 3. 添加自适应嵌入强度
 4. 实现多尺度水印嵌入
 
-## 14. 总结
+## 13. 总结
 
 经过完整的开发和测试，图像水印系统现在具有：
 - 先进的DCT域图像水印算法
@@ -873,3 +857,13 @@ PS G:\Cyber_practice\Project\Project2-Watermark>
 - 良好的可维护性和扩展性
 
 系统在信号处理和图像增强攻击下表现优异，在几何攻击下也有一定的鲁棒性。项目已经可以正常运行，并且具有良好的实用价值和研究价值。 
+
+## 参考文献
+[1] 南京航空航天大学。基于 FPGA 的 JPEG 图像数字水印系统 [R]. 南京：南京航空航天大学
+[2] 基于小波变换的数字水印算法研究实践报告 (https://www.renrendoc.com/paper/269337835.html)
+[3] 楼偶俊，祁瑞华，邬俊，等。数字水印技术及其应用 [M]. 北京：清华大学出版社，2018.
+[4] Lin P L, et al. A hierarchical digital watermarking method for image tamper detection and recovery [J]. Pattern Recognition.
+[5] Lee T Y, Lin S D. Dual watermark for image tamper detection and recovery [J]. Pattern Recognition.
+[6] https://blog.csdn.net/m0_57702748/article/details/131483653?ops_request_misc=&request_id=&biz_id=102&utm_term=%E5%9B%BE%E5%83%8F%E6%B0%B4%E5%8D%B0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-1-131483653.142^v102^control&spm=1018.2226.3001.4187
+[7] https://blog.csdn.net/m0_52363973/article/details/131115784?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522b5734f0f87f2809e79cf146177c8227e%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=b5734f0f87f2809e79cf146177c8227e&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-131115784-null-null.142^v102^control&utm_term=%E5%9B%BE%E5%83%8F%E6%B0%B4%E5%8D%B0&spm=1018.2226.3001.4187
+[8] Ma Z, Zhang W, Fang H, et al. Local geometric distortions resilient watermarking scheme based on symmetry[J]. IEEE Transactions on Circuits and Systems for Video Technology, 2021, 31(12): 4826-4839. DOI: 10.1109/TCSVT.2021.3055255.
