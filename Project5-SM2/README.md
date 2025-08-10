@@ -13,7 +13,7 @@
 
 ## 实验概述
 
-本实验深入研究了国密SM2椭圆曲线密码算法，实现了完整的基础版本和多种优化技术集成的优化版本。实验涵盖了SM2算法的核心功能模块：密钥生成、数字签名、签名验证、加密和解密等。通过系统性的性能优化，包括预计算表、NAF编码、Co-Z点加、Jacobian坐标和蒙哥马利模乘等先进技术，显著提升了算法执行效率。
+本实验深入研究了国密SM2椭圆曲线密码算法，结合山东大学网络空间安全创新创业实践课程相关知识，严格按照项目实验完成要求，实现了完整的基础版本和多种优化技术集成的优化版本。实验涵盖了SM2算法的核心功能模块：密钥生成、数字签名、签名验证、加密和解密等。通过系统性的性能优化，包括预计算表、NAF编码、Co-Z点加、Jacobian坐标和蒙哥马利模乘等先进技术，显著提升了算法执行效率。
 
 ### 实验目标
 1. **算法实现完整性**：严格按照国标GB/T 35276-2017实现SM2算法
@@ -588,7 +588,7 @@ if not (1 <= r < self.n and 1 <= s < self.n):
 3. **实现参考**: 为其他开发者提供完整的实现参考
 4. **研究基础**: 为后续优化研究提供坚实基础
 
-#### 经济效益分析
+#### 运行效益分析
 1. **计算资源节约**: 减少50%以上的计算开销
 2. **响应时间改善**: 显著提升用户体验
 3. **系统容量提升**: 在相同硬件下支持更多并发
@@ -608,60 +608,27 @@ if not (1 <= r < self.n and 1 <= s < self.n):
 3. **硬件加速**: 探索专用硬件加速方案
 4. **自适应优化**: 根据使用场景动态选择优化策略
 
-### 未来研究方向
-
-#### 短期研究方向
-1. **并行算法**: 研究SM2算法的并行实现
-2. **内存优化**: 进一步减少内存开销
-3. **平台适配**: 针对不同平台的优化策略
-4. **安全性增强**: 研究侧信道攻击防护
-
-#### 长期研究方向
-1. **量子抗性**: 研究后量子时代的SM2算法
-2. **硬件实现**: 专用硬件加速器设计
-3. **标准化**: 推动优化技术的标准化
-4. **应用拓展**: 探索更多应用场景
-
 ## 参考文献
+[1] **GB/T 35276-2017** 信息安全技术 SM2椭圆曲线公钥密码算法
 
-### 国家标准与规范
-1. **GB/T 35276-2017** 信息安全技术 SM2椭圆曲线公钥密码算法
-2. **国家密码管理局** (2010). SM2椭圆曲线公钥密码算法使用规范
-3. **国家密码管理局** (2012). 密码算法使用规范
-4. **GB/T 32918.1-2016** 信息安全技术 SM2椭圆曲线公钥密码算法 第1部分：总则
+[2] **国家密码管理局** (2010). SM2椭圆曲线公钥密码算法使用规范
 
-### 学术论文与专著
-5. **Hankerson, D., Menezes, A., & Vanstone, S.** (2004). Guide to elliptic curve cryptography. Springer Science & Business Media.
-6. **Montgomery, P. L.** (1987). Speeding the Pollard and elliptic curve methods of factorization. Mathematics of computation, 48(177), 243-264.
-7. **Koblitz, N.** (1987). Elliptic curve cryptosystems. Mathematics of computation, 48(177), 203-209.
-8. **Miller, V. S.** (1985). Use of elliptic curves in cryptography. In Conference on the theory and application of cryptographic techniques (pp. 417-426). Springer.
+[3] **国家密码管理局** (2012). 密码算法使用规范
 
-### 优化技术相关文献
-9. **Gordon, D. M.** (1998). A survey of fast exponentiation methods. Journal of algorithms, 27(1), 129-146.
-10. **Solinas, J. A.** (2000). Efficient arithmetic on Koblitz curves. Designs, codes and cryptography, 19(2-3), 195-249.
-11. **Hankerson, D., López, J., & Menezes, A.** (2004). Software implementation of elliptic curve cryptography over binary fields. In Cryptographic hardware and embedded systems (pp. 1-24). Springer.
-12. **Bernstein, D. J., & Lange, T.** (2007). Faster addition and doubling on elliptic curves. In International conference on the theory and application of cryptology and information security (pp. 29-50). Springer.
+[4] **GB/T 32918.1-2016** 信息安全技术 SM2椭圆曲线公钥密码算法 第1部分：总则
 
-### 实现与工程相关
-13. **Brown, M., Hankerson, D., López, J., & Menezes, A.** (2001). Software implementation of the NIST elliptic curves over prime fields. In Topics in cryptology (pp. 250-265). Springer.
-14. **Gaudry, P., & Schost, É.** (2004). On the complexity of the discrete logarithm and the Diffie-Hellman problems. Journal of cryptology, 17(4), 309-323.
-15. **Blake, I. F., Seroussi, G., & Smart, N. P.** (2005). Elliptic curves in cryptography. Cambridge university press.
+[5] **GMT+0009-2023** SM2密码算法使用规范
 
-### 安全性分析相关
-16. **Menezes, A. J., Van Oorschot, P. C., & Vanstone, S. A.** (2018). Handbook of applied cryptography. CRC press.
-17. **Koblitz, N., & Menezes, A.** (2005). Pairing-based cryptography at high security levels. In Cryptography and coding (pp. 13-36). Springer.
-18. **Galbraith, S. D.** (2012). Mathematics of public key cryptography. Cambridge University Press.
+[6] **20250710-fu-SM2-public** SM2算法实现与优化
 
-### 性能优化相关
-19. **Bernstein, D. J.** (2006). Curve25519: new Diffie-Hellman speed records. In Public key cryptography (pp. 207-228). Springer.
-20. **Edwards, H. M.** (2007). A normal form for elliptic curves. Bulletin of the American Mathematical Society, 44(3), 393-422.
-21. **Hisil, H., Wong, K. K. H., Carter, G., & Dawson, E.** (2008). Twisted Edwards curves revisited. In International conference on the theory and application of cryptology and information security (pp. 326-343). Springer.
+[7] **国家密码管理局** (2016). 商用密码应用安全性评估管理办法
 
-### 国密算法相关
-22. **国家密码管理局** (2016). 商用密码应用安全性评估管理办法
-23. **中国密码学会** (2018). 密码学发展报告
-24. **张焕国, 王丽娜** (2019). 密码学原理与实践. 电子工业出版社.
-25. **冯登国** (2018). 现代密码学理论与实践. 清华大学出版社.
+[8] **中国密码学会** (2018). 密码学发展报告
+
+[9] **张焕国, 王丽娜** (2019). 密码学原理与实践. 电子工业出版社.
+
+[10] **冯登国** (2018). 现代密码学理论与实践. 清华大学出版社.
+
 
 ## 附录
 
@@ -738,43 +705,3 @@ Co-Z点加测试通过
 - **验签性能提升**: 32.4% (从16.070ms降低到10.870ms)
 - **综合性能提升**: 51.6%
 - **测试稳定性**: 多次测试结果稳定，性能提升效果显著
-
-### 部署与使用指南
-
-#### 环境要求
-- Python 3.7+
-- 内存: 建议2GB以上
-- 存储: 至少100MB可用空间
-
-#### 安装步骤
-```bash
-# 1. 克隆项目
-git clone <repository-url>
-cd Project5-SM2
-
-# 2. 运行基础版本测试
-python SM2_Basic/Test_Basic.py
-
-# 3. 运行优化版本测试
-python SM2_Opti/Test_Opti.py
-```
-
-#### 使用示例
-```python
-# 基础版本使用示例
-from SM2_Basic.SM2_Sign import SM2Signature
-
-# 创建签名器
-signer = SM2Signature()
-
-# 生成密钥对
-d, Q = signer.generate_keypair()
-
-# 签名
-message = "Hello, SM2!".encode('utf-8')
-signature = signer.sign(message, d, Q)
-
-# 验签
-result = signer.verify(message, signature, Q)
-print(f"验签结果: {result}")
-```
