@@ -611,7 +611,7 @@ python GPC_main.py
 ### 详细测试结果
 
 #### 单个密码检查测试结果
-```
+
 === Google Password Checkup协议演示 ===
 基于私有集合交集技术的隐私保护密码泄露检查
 
