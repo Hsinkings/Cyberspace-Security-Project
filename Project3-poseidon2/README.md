@@ -184,7 +184,7 @@ snarkjs groth16 verify build/verification_key.json build/public.json build/proof
 
 ## 7. 实验结果与分析
 
-# 实验流程与结果图像保存在exp_result文件夹下
+### 实验流程与结果图像保存在exp_result文件夹下
 
 - JS 快速校验：对默认 `in0=123,in1=456`，计算得到的哈希与 `input.json` 中 `pubHash` 一致，验证通过。
 - 预置 Groth16 验证：`set_result/` 下三件套可在安装好 `snarkjs` 的环境中直接验证。
