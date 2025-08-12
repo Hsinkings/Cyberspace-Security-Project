@@ -1,0 +1,9 @@
+{
+  "name": "poseidon2_full_project",
+  "version": "1.0.0",
+  "scripts": {
+    "calc": "node calc_poseidon2.js",
+    "test": "node test_poseidon2.js",
+    "test-js": "node test_js_only.js"
+  }
+}
