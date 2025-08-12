@@ -647,6 +647,7 @@ Project5-SM2/
 │   ├── SM2.py          # 优化加解密
 │   ├── SM3.py          # 哈希函数
 │   └── Test_Opti.py    # 优化测试
+├── Test_Results/       # 运行结果示例
 ├── 参考文档/
 └── README.md           # 实验报告
 ```

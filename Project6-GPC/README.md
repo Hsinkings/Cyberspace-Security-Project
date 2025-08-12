@@ -597,6 +597,7 @@ Project6-GPC/
 │   ├── client.py       # 客户端实现
 │   ├── server.py       # 服务端实现
 ├── GPC_main.py         # 主程序演示
+├── exp_result/         # 运行结果示例图像
 ├── 参考文档/           # 相关参考文档
 │   └── 2019-723.pdf   # Google Password Checkup协议论文
 └── README.md           # 实验报告
