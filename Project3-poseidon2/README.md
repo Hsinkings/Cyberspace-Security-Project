@@ -1,7 +1,7 @@
 # Project 3：使用 Circom 实现 Poseidon2 哈希电路并基于 Groth16 生成与验证零知识证明
 
 本报告围绕山东大学网络空间安全创新创业实践课程项目要求展开，并对照给出设计与实现：
-- 参数选型：参考参考文档 1（Poseidon2 论文）Table 1，选用 (n,t,d)=(256,3,5)；同时电路结构可自然收缩到 (256,2,5)。
+- 参数选型：参考实验所给文档 1（Poseidon2 论文）Table 1，选用 (n,t,d)=(256,3,5) 参数；同时电路结构可自然收缩到 (256,2,5)。
 - 接口约定：公开输入为 Poseidon2 哈希值，隐私输入为哈希原象，仅考虑单个 block。
 - 证明系统：采用 Groth16 生成证明并验证。
 
@@ -41,7 +41,7 @@ Project3-poseidon2/
 │   ├── verification_key_groth16.json # 验证密钥（VK）
 │   ├── public_inputs.json            # 公开输入（JSON 数组形式）
 │   └── proof_groth16.json            # 证明（Proof）
-├── exp_result/                        # 实验过程图像
+├── exp_result/                        # 实验过程图像及实验运行结果
 ├── calc_poseidon2.js                  # 计算哈希并生成 input.json
 ├── input.json                         # 实验输入（in0,in1,pubHash）
 ├── test_js_only.js                    # 仅 JS 快速校验（无需 circom/snarkjs）
@@ -116,6 +116,8 @@ npm run test-js
 
 ## 5. 环境与依赖
 
+本实验在Ubuntu20.04系统下完成。
+
 - Node.js >= 14
 - Circom 2.x（建议 2.1+）
 - snarkjs（全局或 npx 均可）
@@ -151,36 +153,38 @@ snarkjs groth16 verify set_result/verification_key_groth16.json \
                          set_result/proof_groth16.json
 ```
 
-### C. 从零编译与生成证明（可复现实验）
+### C. 编译与生成证明
 
-如下指令遵循 circom/snarkjs 标准流程（命令与文件名可按你实际目录调整）：
+遵循 circom/snarkjs 标准流程：
 ```bash
 # 1) 编译电路（生成 r1cs/wasm/sym）
 circom circuits/main.circom --r1cs --wasm --sym -o build
 
-# 2) 计算 witness（需把 input.json 放到 build/ 旁或指定路径）
+# 2) 计算witness
 node build/main_js/generate_witness.js build/main.wasm input.json build/witness.wtns
 
-# 3) Powers of Tau（若无现成 ptau，可本地生成）
-snarkjs powersoftau new bn128 12 build/pot12_0000.ptau -v
-snarkjs powersoftau contribute build/pot12_0000.ptau build/pot12_0001.ptau --name="c1" -v
-snarkjs powersoftau prepare phase2 build/pot12_0001.ptau build/pot12_final.ptau -v
+# 3) Powers of Tau（示例操作）
+snarkjs powersoftau new bn128 12 1.ptau -v
+snarkjs powersoftau contribute 1.ptau 2.ptau --name="c1" -v
+snarkjs powersoftau prepare phase2 build/1.ptau build/final.ptau -v
 
 # 4) Groth16 setup + 第二次贡献
-snarkjs groth16 setup build/main.r1cs build/pot12_final.ptau build/poseidon2_0000.zkey
-snarkjs zkey contribute build/poseidon2_0000.zkey build/poseidon2_0001.zkey --name="c2" -v
+snarkjs groth16 setup build/main.r1cs build/final.ptau build/1.zkey
+snarkjs zkey contribute build/1.zkey build/2.zkey --name="c2" -v
 
 # 5) 导出验证密钥
-snarkjs zkey export verificationkey build/poseidon2_0001.zkey build/verification_key.json
+snarkjs zkey export verificationkey build/1.zkey build/verification_key.json
 
 # 6) 生成证明
-snarkjs groth16 prove build/poseidon2_0001.zkey build/witness.wtns build/proof.json build/public.json
+snarkjs groth16 prove build/1.zkey build/witness.wtns build/proof.json build/public.json
 
 # 7) 验证证明
 snarkjs groth16 verify build/verification_key.json build/public.json build/proof.json
 ```
 
 ## 7. 实验结果与分析
+
+# 实验流程与结果图像保存在exp_result文件夹下
 
 - JS 快速校验：对默认 `in0=123,in1=456`，计算得到的哈希与 `input.json` 中 `pubHash` 一致，验证通过。
 - 预置 Groth16 验证：`set_result/` 下三件套可在安装好 `snarkjs` 的环境中直接验证。
