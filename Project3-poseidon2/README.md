@@ -41,7 +41,7 @@ Project3-poseidon2/
 │   ├── verification_key_groth16.json # 验证密钥（VK）
 │   ├── public_inputs.json            # 公开输入（JSON 数组形式）
 │   └── proof_groth16.json            # 证明（Proof）
-├── exp_result/                        # 实验过程图像
+├── exp_result/                        # 实验过程图像及实验运行结果
 ├── calc_poseidon2.js                  # 计算哈希并生成 input.json
 ├── input.json                         # 实验输入（in0,in1,pubHash）
 ├── test_js_only.js                    # 仅 JS 快速校验（无需 circom/snarkjs）
@@ -151,30 +151,30 @@ snarkjs groth16 verify set_result/verification_key_groth16.json \
                          set_result/proof_groth16.json
 ```
 
-### C. 从零编译与生成证明（可复现实验）
+### C. 编译与生成证明
 
-如下指令遵循 circom/snarkjs 标准流程（命令与文件名可按你实际目录调整）：
+遵循 circom/snarkjs 标准流程：
 ```bash
 # 1) 编译电路（生成 r1cs/wasm/sym）
 circom circuits/main.circom --r1cs --wasm --sym -o build
 
-# 2) 计算 witness（需把 input.json 放到 build/ 旁或指定路径）
+# 2) 计算witness
 node build/main_js/generate_witness.js build/main.wasm input.json build/witness.wtns
 
-# 3) Powers of Tau（若无现成 ptau，可本地生成）
-snarkjs powersoftau new bn128 12 build/pot12_0000.ptau -v
-snarkjs powersoftau contribute build/pot12_0000.ptau build/pot12_0001.ptau --name="c1" -v
-snarkjs powersoftau prepare phase2 build/pot12_0001.ptau build/pot12_final.ptau -v
+# 3) Powers of Tau（示例操作）
+snarkjs powersoftau new bn128 12 1.ptau -v
+snarkjs powersoftau contribute 1.ptau 2.ptau --name="c1" -v
+snarkjs powersoftau prepare phase2 build/1.ptau build/final.ptau -v
 
 # 4) Groth16 setup + 第二次贡献
-snarkjs groth16 setup build/main.r1cs build/pot12_final.ptau build/poseidon2_0000.zkey
-snarkjs zkey contribute build/poseidon2_0000.zkey build/poseidon2_0001.zkey --name="c2" -v
+snarkjs groth16 setup build/main.r1cs build/final.ptau build/1.zkey
+snarkjs zkey contribute build/1.zkey build/2.zkey --name="c2" -v
 
 # 5) 导出验证密钥
-snarkjs zkey export verificationkey build/poseidon2_0001.zkey build/verification_key.json
+snarkjs zkey export verificationkey build/1.zkey build/verification_key.json
 
 # 6) 生成证明
-snarkjs groth16 prove build/poseidon2_0001.zkey build/witness.wtns build/proof.json build/public.json
+snarkjs groth16 prove build/1.zkey build/witness.wtns build/proof.json build/public.json
 
 # 7) 验证证明
 snarkjs groth16 verify build/verification_key.json build/public.json build/proof.json
