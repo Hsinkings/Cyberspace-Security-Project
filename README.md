@@ -22,6 +22,7 @@ Project/
 │   ├── SM4_Basic/                    # 基础实现
 │   ├── SM4_TT/                       # T-Table优化实现
 │   ├── SM4_AESNI/                    # AES-NI/SIMD硬件加速实现
+│   ├── SM4_GCM/                      # SM4-GCM算法优化实现
 │   ├── Tests/                        # 测试用明文/密钥/样例结果
 │   ├── Test_results/                 # 正确性与性能截图
 │   ├── testall.py                    # 性能测试脚本

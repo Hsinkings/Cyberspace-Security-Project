@@ -466,6 +466,7 @@ Project1-SM4/
 │   ├── 随机测试样例解密.png       # 随机测试解密结果
 │   ├── 性能对比测试1.png         # 性能对比测试结果1
 │   ├── 性能对比测试2.png         # 性能对比测试结果2
+│   ├── GCM优化测试.png           # GCM算法加解密测试
 │   └── 命令行使用测试.png         # 命令行使用测试
 ├── 参考文档/                      # 算法标准文档
 │   ├── 【SM4算法国标】GBT32907-2016标准.pdf
@@ -514,3 +515,5 @@ Project1-SM4/
 4. https://www.cnblogs.com/kentle/p/15826075.html
 5. Long Wen, 《Fast Software Implementation of Crypto Primitives: A Survey Of AES & SM4 Implementation》(2025)
 6. SM4算法官方文档及测试向量
+7. 使用SM4对称密钥（GCM模式）加解密(C/C++) https://blog.csdn.net/hidescold/article/details/147228586?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522c6fcd39234569ef857a5031a110a6fd9%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=c6fcd39234569ef857a5031a110a6fd9&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-2-147228586-null-null.142^v102^control&utm_term=SM4-GCM&spm=1018.2226.3001.4187
+8. AES-GCM和SM4-GCM工作原理及数据加解密验证方案详解 https://xueying.blog.csdn.net/article/details/148547329?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPaidSort-1-148547329-blog-147228586.235%5Ev43%5Epc_blog_bottom_relevance_base1&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPaidSort-1-148547329-blog-147228586.235%5Ev43%5Epc_blog_bottom_relevance_base1&utm_relevant_index=1
