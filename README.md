@@ -14,6 +14,8 @@
 
 本仓库所有项目均由本人独立完成。
 
+各项目的实验报告与代码文件详见各项目所属文件夹。
+
 ### 目录结构
 
 ```text
@@ -57,6 +59,7 @@ Project/
 │   ├── SM2_Basic/                    # 基础实现
 │   ├── SM2_Opti/                     # 多技术融合优化实现
 │   ├── Test_Results/                 # 性能测试结果
+│   ├── SM2_Security_Test.py          # POC安全验证与中本聪数字签名实现
 │   └── README.md                     # 项目五实验报告
 ├── Project6-GPC/                     # 项目六：Google Password Checkup协议实现
 │   ├── GPC/                          # GPC协议核心构建
