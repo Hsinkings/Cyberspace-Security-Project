@@ -644,7 +644,7 @@ def satoshi_signature_forgery_demo():
                     # 验证伪造签名
                     if verify_signature(test_message, forged_signature, satoshi_public_key, b'1234567812345678'):
                         print("伪造签名通过验证")
-                        print("攻击成功：私钥未知但签名有效！")
+                        print("攻击成功：私钥未知但签名有效")
                     else:
                         print("伪造签名验证失败")
                     break
@@ -696,8 +696,8 @@ def satoshi_signature_forgery_demo():
                 
                 # 验证伪造签名
                 if verify_signature(test_message, forged_signature, satoshi_public_key, b'1234567812345678'):
-                    print("伪造签名通过验证！")
-                    print("攻击成功：利用椭圆曲线性质构造有效签名！")
+                    print("伪造签名通过验证")
+                    print("攻击成功：利用椭圆曲线性质构造有效签名")
                 else:
                     print("伪造签名验证失败")
                 break
@@ -761,7 +761,7 @@ def run_security_demos():
     
     print("\n=== 安全演示完成 ===")
     print("重要提醒：")
-    print("1. 永远不要重用随机数k")
+    print("1. 请勿重用随机数k")
     print("2. 使用密码学安全的随机数生成器")
     print("3. 定期更新密钥对")
     print("4. 验证所有签名的有效性")
@@ -803,8 +803,8 @@ def weak_parameter_validation():
         return R == r
     
     # 构造恶意签名
-    malicious_r = 0  # 无效的r值
-    malicious_s = 1  # 有效的s值
+    malicious_r = 0  # 无效r值
+    malicious_s = 1  # 有效s值
     
     # 测试恶意签名
     message = b"Test message"
@@ -822,7 +822,7 @@ def weak_parameter_validation():
     print(f"标准验证结果: {result_standard}")
     
     if result_weak != result_standard:
-        print("⚠️  警告：弱验证函数存在安全漏洞！")
+        print("警告：弱验证函数存在安全漏洞")
 
 **时间侧信道攻击防护**：
 ```python
@@ -840,8 +840,7 @@ def timing_attack_protection():
         
         if s <= 0 or s >= n:
             return False  # 早期返回，可能泄露信息
-        
-        # ... 其他验证逻辑
+
         return True
     
     # 安全的实现：恒定时间验证
@@ -855,12 +854,10 @@ def timing_attack_protection():
         # 所有验证步骤都执行，最后统一返回结果
         valid = r_valid & s_valid
         
-        # ... 其他验证逻辑（即使参数无效也执行）
-        
         return valid & final_result
     
-    print("✓ 安全实现：使用恒定时间算法防止时间侧信道攻击")
-    print("✓ 避免早期返回和分支预测泄露信息")
+    print("安全实现：使用恒定时间算法防止时间侧信道攻击")
+    print("避免早期返回和分支预测泄露信息")
 
 ### 算法理论基础安全性
 
