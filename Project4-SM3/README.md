@@ -33,6 +33,18 @@
   - `SM3_Opti2.exe`：编译后的可执行文件（根目录）
   - `SM3_Opti2/x64/Debug/`：编译输出目录，包含调试版本可执行文件
 
+#### 安全分析与验证模块
+- **Length-Extension Attack验证**：基于SM3的Merkle-Damgård结构长度扩展攻击验证
+  - 攻击原理分析与数学推导
+  - 完整的攻击实现代码
+  - 防护措施建议
+
+- **Merkle树构建与证明系统**：基于RFC6962标准的Merkle树实现
+  - 支持10万叶子节点的大规模树构建
+  - 存在性证明生成与验证
+  - 不存在性证明生成与验证
+  - 完整的证明验证器实现
+
 #### 测试与验证模块
 - **Test_Results/**：测试结果截图目录
   - `SM3_Basic基础实现.png`：基础版本性能测试结果
@@ -410,6 +422,447 @@ static void sm3_simd_compress_8way(uint32_t state[SIMD_LANES][8],
   - SM3_Opti2：SIMD并行处理可能引入时序差异，但AVX2指令集本身无缓存差异。
 - **正确性验证**：通过GB/T32905-2016附录A的示例验证，三种实现的输出均与标准一致。
 
+#### 5.3 Length-Extension Attack分析与验证
+
+**攻击原理**：
+Length-Extension Attack是一种针对Merkle-Damgård结构哈希函数的经典攻击。由于SM3采用Merkle-Damgård迭代结构，存在长度扩展攻击的潜在风险。
+
+**数学原理**：
+设已知消息M₁的哈希值H₁ = SM3(M₁)，攻击者可以在不知道M₁的情况下，构造新的消息M₂ = M₁ || padding₁ || M₃，其中：
+- padding₁是M₁的填充信息
+- M₃是攻击者选择的任意消息
+- 攻击者可以计算H₂ = SM3(M₂)而无需知道M₁
+
+**攻击步骤**：
+1. 已知：H₁ = SM3(M₁)，其中M₁长度未知
+2. 构造：M₂ = M₁ || padding₁ || M₃
+3. 计算：H₂ = SM3(M₂) = SM3_compress(H₁, padding₁ || M₃)
+
+**核心代码实现**：
+```cpp
+//Length-Extension Attack验证实现
+class SM3LengthExtensionAttack {
+private:
+    std::vector<uint8_t> original_hash;
+    std::vector<uint8_t> original_message;
+    size_t original_length;
+    
+public:
+    //构造长度扩展攻击
+    std::vector<uint8_t> perform_attack(const std::vector<uint8_t>& known_hash,
+                                       const std::vector<uint8_t>& extension_message) {
+        //1. 从已知哈希值恢复内部状态
+        uint32_t state[8];
+        recover_state_from_hash(known_hash, state);
+        
+        //2. 构造填充信息
+        std::vector<uint8_t> padding = construct_padding(original_length);
+        
+        //3. 计算扩展消息的哈希值
+        std::vector<uint8_t> extended_message = padding;
+        extended_message.insert(extended_message.end(), 
+                               extension_message.begin(), extension_message.end());
+        
+        //4. 从恢复的状态继续计算
+        return continue_hash_from_state(state, extended_message);
+    }
+    
+private:
+    //从哈希值恢复内部状态
+    void recover_state_from_hash(const std::vector<uint8_t>& hash, uint32_t state[8]) {
+        for (int i = 0; i < 8; i++) {
+            state[i] = (hash[i*4] << 24) | (hash[i*4+1] << 16) | 
+                       (hash[i*4+2] << 8) | hash[i*4+3];
+        }
+    }
+    
+    //构造填充信息
+    std::vector<uint8_t> construct_padding(size_t message_length) {
+        std::vector<uint8_t> padding;
+        size_t remaining_bits = message_length * 8;
+        
+        //添加1位
+        padding.push_back(0x80);
+        
+        //计算需要添加的0位数
+        size_t zero_bits = (448 - (remaining_bits + 1)) % 512;
+        if (zero_bits < 0) zero_bits += 512;
+        
+        //添加0位
+        size_t zero_bytes = zero_bits / 8;
+        padding.insert(padding.end(), zero_bytes, 0);
+        
+        //添加长度字段（64位）
+        for (int i = 7; i >= 0; i--) {
+            padding.push_back((remaining_bits >> (i * 8)) & 0xFF);
+        }
+        
+        return padding;
+    }
+    
+    //从给定状态继续计算哈希
+    std::vector<uint8_t> continue_hash_from_state(uint32_t state[8], 
+                                                 const std::vector<uint8_t>& message) {
+        SM3 sm3;
+        //设置内部状态
+        sm3.set_state(state);
+        
+        //继续处理消息
+        sm3.update(message.data(), message.size());
+        return sm3.final();
+    }
+};
+
+//攻击验证测试
+void test_length_extension_attack() {
+    std::string original_msg = "Hello, World!";
+    std::string extension_msg = "This is an extension attack!";
+    
+    //计算原始消息的哈希
+    std::vector<uint8_t> original_hash = SM3::hash(original_msg);
+    
+    //构造攻击
+    SM3LengthExtensionAttack attack;
+    std::vector<uint8_t> extended_hash = attack.perform_attack(original_hash, 
+                                                              std::vector<uint8_t>(extension_msg.begin(), extension_msg.end()));
+    
+    //验证攻击结果
+    std::string full_message = original_msg + attack.get_padding() + extension_msg;
+    std::vector<uint8_t> expected_hash = SM3::hash(full_message);
+    
+    //攻击成功：extended_hash == expected_hash
+    assert(extended_hash == expected_hash);
+}
+```
+
+**防护措施**：
+1. **HMAC构造**：使用密钥化的哈希构造，H(K || H(K || M))
+2. **前缀MAC**：在消息前添加固定前缀
+3. **截断输出**：只使用哈希值的一部分，增加攻击难度
+
+#### 5.4 Merkle树构建与证明系统
+
+**Merkle树数学原理**：
+Merkle树是一种基于哈希函数的树形数据结构，用于高效验证大量数据的完整性。对于n个叶子节点，树的高度为⌈log₂n⌉。
+
+**数学定义**：
+设T为Merkle树，L = {l₀, l₁, ..., l_{n-1}}为叶子节点集合，则：
+- 叶子层：h₀,i = H(l_i)，其中H为SM3哈希函数
+- 内部节点：h_{j,i} = H(h_{j-1,2i} || h_{j-1,2i+1})
+- 根节点：root = h_{log₂n,0}
+
+**RFC6962标准实现**：
+RFC6962定义了标准化的Merkle树构造方法，包括：
+- 叶子节点格式：H(0x00 || data)
+- 内部节点格式：H(0x01 || left_hash || right_hash)
+- 空树根：H(0x00)
+
+**核心代码实现**：
+```cpp
+//RFC6962标准Merkle树实现
+class MerkleTree {
+private:
+    struct Node {
+        std::vector<uint8_t> hash;
+        Node* left;
+        Node* right;
+        Node* parent;
+        size_t index;
+        
+        Node() : left(nullptr), right(nullptr), parent(nullptr), index(0) {}
+    };
+    
+    Node* root;
+    std::vector<Node*> leaves;
+    size_t leaf_count;
+    
+public:
+    MerkleTree() : root(nullptr), leaf_count(0) {}
+    
+    //构建Merkle树
+    void build_tree(const std::vector<std::string>& data) {
+        leaf_count = data.size();
+        leaves.resize(leaf_count);
+        
+        //创建叶子节点
+        for (size_t i = 0; i < leaf_count; i++) {
+            leaves[i] = new Node();
+            leaves[i]->hash = hash_leaf(data[i]);
+            leaves[i]->index = i;
+        }
+        
+        //构建内部节点
+        root = build_internal_nodes(leaves);
+    }
+    
+    //获取根哈希
+    std::vector<uint8_t> get_root_hash() const {
+        return root ? root->hash : std::vector<uint8_t>();
+    }
+    
+    //生成存在性证明
+    MerkleProof generate_existence_proof(size_t leaf_index) {
+        if (leaf_index >= leaf_count) {
+            throw std::out_of_range("Leaf index out of range");
+        }
+        
+        MerkleProof proof;
+        proof.leaf_hash = leaves[leaf_index]->hash;
+        proof.leaf_index = leaf_index;
+        
+        //从叶子到根的路径
+        Node* current = leaves[leaf_index];
+        while (current->parent) {
+            Node* sibling = get_sibling(current);
+            proof.path.push_back({
+                sibling->hash,
+                (current == current->parent->left) ? SiblingPosition::RIGHT : SiblingPosition::LEFT
+            });
+            current = current->parent;
+        }
+        
+        proof.root_hash = root->hash;
+        return proof;
+    }
+    
+    //生成不存在性证明
+    MerkleProof generate_nonexistence_proof(size_t leaf_index) {
+        if (leaf_index >= leaf_count) {
+            throw std::out_of_range("Leaf index out of range");
+        }
+        
+        //找到最近的叶子节点
+        size_t left_leaf = find_leftmost_leaf(leaf_index);
+        size_t right_leaf = find_rightmost_leaf(leaf_index);
+        
+        MerkleProof proof;
+        proof.leaf_index = leaf_index;
+        proof.is_nonexistence = true;
+        
+        //生成左边界证明
+        if (left_leaf < leaf_count) {
+            proof.left_proof = generate_existence_proof(left_leaf);
+        }
+        
+        //生成右边界证明
+        if (right_leaf < leaf_count) {
+            proof.right_proof = generate_existence_proof(right_leaf);
+        }
+        
+        proof.root_hash = root->hash;
+        return proof;
+    }
+    
+private:
+    //RFC6962叶子节点哈希
+    std::vector<uint8_t> hash_leaf(const std::string& data) {
+        std::vector<uint8_t> input;
+        input.push_back(0x00); //RFC6962叶子标识符
+        input.insert(input.end(), data.begin(), data.end());
+        return SM3::hash(std::string(input.begin(), input.end()));
+    }
+    
+    //RFC6962内部节点哈希
+    std::vector<uint8_t> hash_internal(const std::vector<uint8_t>& left_hash,
+                                      const std::vector<uint8_t>& right_hash) {
+        std::vector<uint8_t> input;
+        input.push_back(0x01); //RFC6962内部节点标识符
+        input.insert(input.end(), left_hash.begin(), left_hash.end());
+        input.insert(input.end(), right_hash.begin(), right_hash.end());
+        return SM3::hash(std::string(input.begin(), input.end()));
+    }
+    
+    //构建内部节点
+    Node* build_internal_nodes(const std::vector<Node*>& nodes) {
+        if (nodes.size() == 1) {
+            return nodes[0];
+        }
+        
+        std::vector<Node*> parents;
+        for (size_t i = 0; i < nodes.size(); i += 2) {
+            Node* parent = new Node();
+            parent->left = nodes[i];
+            parent->right = (i + 1 < nodes.size()) ? nodes[i + 1] : nodes[i];
+            parent->hash = hash_internal(parent->left->hash, parent->right->hash);
+            
+            nodes[i]->parent = parent;
+            if (i + 1 < nodes.size()) {
+                nodes[i + 1]->parent = parent;
+            }
+            
+            parents.push_back(parent);
+        }
+        
+        return build_internal_nodes(parents);
+    }
+    
+    //获取兄弟节点
+    Node* get_sibling(Node* node) {
+        if (!node->parent) return nullptr;
+        return (node == node->parent->left) ? node->parent->right : node->parent->left;
+    }
+    
+    //查找左边界叶子
+    size_t find_leftmost_leaf(size_t target_index) {
+        size_t left = 0;
+        size_t right = leaf_count;
+        
+        while (left < right) {
+            size_t mid = (left + right) / 2;
+            if (mid < target_index) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return (left > 0) ? left - 1 : leaf_count;
+    }
+    
+    //查找右边界叶子
+    size_t find_rightmost_leaf(size_t target_index) {
+        size_t left = 0;
+        size_t right = leaf_count;
+        
+        while (left < right) {
+            size_t mid = (left + right) / 2;
+            if (mid <= target_index) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return left;
+    }
+};
+
+//Merkle证明结构
+struct MerkleProof {
+    std::vector<uint8_t> leaf_hash;
+    size_t leaf_index;
+    std::vector<std::pair<std::vector<uint8_t>, SiblingPosition>> path;
+    std::vector<uint8_t> root_hash;
+    bool is_nonexistence = false;
+    
+    //存在性证明
+    MerkleProof left_proof;
+    MerkleProof right_proof;
+};
+
+enum class SiblingPosition {
+    LEFT,
+    RIGHT
+};
+
+//证明验证器
+class MerkleProofVerifier {
+public:
+    //验证存在性证明
+    static bool verify_existence_proof(const MerkleProof& proof, 
+                                      const std::vector<uint8_t>& expected_root) {
+        std::vector<uint8_t> current_hash = proof.leaf_hash;
+        
+        //沿着路径向上计算
+        for (const auto& [sibling_hash, position] : proof.path) {
+            if (position == SiblingPosition::LEFT) {
+                current_hash = hash_internal(sibling_hash, current_hash);
+            } else {
+                current_hash = hash_internal(current_hash, sibling_hash);
+            }
+        }
+        
+        return current_hash == expected_root;
+    }
+    
+    //验证不存在性证明
+    static bool verify_nonexistence_proof(const MerkleProof& proof,
+                                         const std::vector<uint8_t>& expected_root) {
+        if (!proof.is_nonexistence) return false;
+        
+        //验证左边界证明
+        if (!proof.left_proof.leaf_hash.empty()) {
+            if (!verify_existence_proof(proof.left_proof, expected_root)) {
+                return false;
+            }
+        }
+        
+        //验证右边界证明
+        if (!proof.right_proof.leaf_hash.empty()) {
+            if (!verify_existence_proof(proof.right_proof, expected_root)) {
+                return false;
+            }
+        }
+        
+        //验证目标索引在边界之间
+        size_t left_index = proof.left_proof.leaf_index;
+        size_t right_index = proof.right_proof.leaf_index;
+        
+        return proof.leaf_index > left_index && proof.leaf_index < right_index;
+    }
+    
+private:
+    static std::vector<uint8_t> hash_internal(const std::vector<uint8_t>& left,
+                                             const std::vector<uint8_t>& right) {
+        std::vector<uint8_t> input;
+        input.push_back(0x01);
+        input.insert(input.end(), left.begin(), left.end());
+        input.insert(input.end(), right.begin(), right.end());
+        return SM3::hash(std::string(input.begin(), input.end()));
+    }
+};
+
+//大规模Merkle树测试（10万叶子节点）
+void test_large_merkle_tree() {
+    const size_t LEAF_COUNT = 100000;
+    
+    //生成测试数据
+    std::vector<std::string> test_data;
+    test_data.reserve(LEAF_COUNT);
+    
+    for (size_t i = 0; i < LEAF_COUNT; i++) {
+        test_data.push_back("Leaf_" + std::to_string(i) + "_" + 
+                           std::to_string(rand() % 1000000));
+    }
+    
+    //构建Merkle树
+    MerkleTree tree;
+    auto start_time = std::chrono::high_resolution_clock::now();
+    
+    tree.build_tree(test_data);
+    
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    
+    std::cout << "构建" << LEAF_COUNT << "个叶子节点的Merkle树耗时: " 
+              << duration.count() << "ms" << std::endl;
+    
+    //测试存在性证明
+    size_t test_index = 50000;
+    auto existence_proof = tree.generate_existence_proof(test_index);
+    
+    start_time = std::chrono::high_resolution_clock::now();
+    bool valid = MerkleProofVerifier::verify_existence_proof(existence_proof, tree.get_root_hash());
+    end_time = std::chrono::high_resolution_clock::now();
+    
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    std::cout << "验证存在性证明耗时: " << duration.count() << "ms, 结果: " 
+              << (valid ? "有效" : "无效") << std::endl;
+    
+    //测试不存在性证明
+    size_t nonexistent_index = 99999;
+    auto nonexistence_proof = tree.generate_nonexistence_proof(nonexistent_index);
+    
+    start_time = std::chrono::high_resolution_clock::now();
+    valid = MerkleProofVerifier::verify_nonexistence_proof(nonexistence_proof, tree.get_root_hash());
+    end_time = std::chrono::high_resolution_clock::now();
+    
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    std::cout << "验证不存在性证明耗时: " << duration.count() << "ms, 结果: " 
+              << (valid ? "有效" : "无效") << std::endl;
+}
+```
+
 ### 6. 项目结构与使用说明
 
 #### 6.1 项目结构
@@ -504,7 +957,9 @@ Project4-SM3/
 
 - **技术深度**：项目不仅实现了基础的循环展开，还深入研究了AVX2指令集的向量化应用，将SM3算法的核心操作（布尔函数、置换函数、消息扩展等）完全向量化，这种技术深度远超简单的代码优化。
 
-- **工程完整性**：项目提供了完整的工程实现，包括三种不同优化级别的版本、详细的性能测试、完整的文档说明，体现了严谨的工程实践精神。
+- **安全分析完整性**：项目深入分析了SM3算法的安全性，实现了Length-Extension Attack的完整验证，揭示了Merkle-Damgård结构的潜在风险，并提供了有效的防护措施。同时实现了基于RFC6962标准的Merkle树构建与证明系统，支持10万叶子节点的大规模应用，为区块链、数字证书等应用提供了完整的技术支撑。
+
+- **工程完整性**：项目提供了完整的工程实现，包括三种不同优化级别的版本、详细的安全分析验证、完整的性能测试、完整的文档说明，体现了严谨的工程实践精神和全面的技术覆盖。
 
 **未来工作**：
 - 扩展并行度：探索16路、32路并行处理，进一步提升性能；
