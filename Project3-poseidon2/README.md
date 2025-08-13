@@ -30,13 +30,13 @@
 
 ```
 Project3-poseidon2/
-├── circuits/                          # Circom 电路与 JS 参考实现
+├── circuits/                          # Circom 电路与 JS 脚本实现
 │   ├── main.circom                   # 主电路：in0,in1 私有；pubHash 公开；约束 pubHash==state'[0]
 │   ├── poseidon2_perm.circom         # Poseidon2 置换：全轮/部分轮，S-box(x^5)、MDS 等
 │   ├── poseidon2_constants.circom    # 轮常数、MDS 等常量
-│   └── poseidon2_js.js               # JS 参考实现（与电路一致）
+│   └── poseidon2_js.js               # poseidon2算法 JS 实现
 ├── params/
-│   └── params.json                   # 域参数 p、轮常数、MDS（供 JS 使用）
+│   └── params.json                   # 域参数 p、轮常数、MDS
 ├── set_result/                        # 预构建验证产物（Groth16）
 │   ├── verification_key_groth16.json # 验证密钥（VK）
 │   ├── public_inputs.json            # 公开输入（JSON 数组形式）
@@ -44,10 +44,10 @@ Project3-poseidon2/
 ├── exp_result/                        # 实验过程图像及实验运行结果
 ├── calc_poseidon2.js                  # 计算哈希并生成 input.json
 ├── input.json                         # 实验输入（in0,in1,pubHash）
-├── test_js_only.js                    # 仅 JS 快速校验（无需 circom/snarkjs）
+├── test_js_only.js                    # 仅 JS 脚本快速校验（无需 circom/snarkjs）
 ├── test_poseidon2.js                  # 使用 set_result 进行 Groth16 验证（自动解析 snarkjs 命令）
 ├── package.json                       # NPM 脚本：calc/test/test-js
-└── README.md                          # 实验报告（本文件）
+└── README.md                          # 实验报告
 ```
 
 ## 2. 理论与参数选型（(n,t,d)=(256,3,5)）
@@ -66,12 +66,12 @@ Project3-poseidon2/
 
 Poseidon2 相比早期 Poseidon 方案在轮数与安全分析上更紧致，使用 \(x^5\) 兼顾代数度与电路开销。轮数（完整轮 RF、部分轮 RP）按论文 Table 1 的安全参数固定在常量文件中。
 
-### 2.3 Sponge 模式：吸收与挤压（单 block）
+### 2.3 Sponge 模式（单 block）
 - 本项目只考虑单个 block（两元素）输入，状态长度 \(t=3\) 其中“速率” \(r=2\)、“容量” \(c=1\)。
 - 初始状态设为 \([\text{in0},\,\text{in1},\,0]\)，即先吸收两个隐私输入，保留 1 个容量位以确保安全边界。
 - 经过若干轮置换后，取状态的第一个元素 \(s_0\) 作为哈希输出。
 
-### 2.4 选择 \(d=5\) 的动机与安全性
+### 2.4 选择 \(d=5\) 的原因与安全性分析
 - \(x^5\) 兼具较高代数度与较低电路实现成本（相较于更高次幂），便于在 R1CS 中以少量乘法门实现（平方两次再乘自身）。
 - 完整轮与部分轮策略在保证扩散与抗代数攻击的同时，显著减少总轮数与约束数量。
 
@@ -184,7 +184,7 @@ snarkjs groth16 verify build/verification_key.json build/public.json build/proof
 
 ## 7. 实验结果与分析
 
-# 实验流程与结果图像保存在exp_result文件夹下
+### 实验流程与结果图像保存在exp_result文件夹下
 
 - JS 快速校验：对默认 `in0=123,in1=456`，计算得到的哈希与 `input.json` 中 `pubHash` 一致，验证通过。
 - 预置 Groth16 验证：`set_result/` 下三件套可在安装好 `snarkjs` 的环境中直接验证。
