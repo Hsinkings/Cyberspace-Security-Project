@@ -1,5 +1,5 @@
 #SM4加密性能测试程序
-#测试基本SM4、Ttable优化以及AESNI优化算法的性能对比
+#测试基本SM4、Ttable优化、AESNI优化以及GCM模式优化算法的性能对比
 import time
 import random
 import os
@@ -40,13 +40,34 @@ class SM4PerformanceTest:
                 print(f"Error: Test file {test_file} not found at {test_file_path}")
                 return
             if not os.path.exists(key_file_path):
-                print(f"Error: Key file not found at {key_file_path}")
+                print(f"Error: Key file not found at {executable_path}")
                 return
             
-            result = subprocess.run([
-                executable_path,
-                "-e", test_file_path, key_file_path, output_file_path
-            ], capture_output=True, text=True, timeout=30)
+            #根据可执行文件类型选择不同的测试参数
+            if "GCM" in executable:
+                #GCM模式需要额外的参数：IV、AAD、tag
+                iv_file_path = os.path.join(os.path.dirname(__file__), "Tests", "iv.txt")
+                aad_file_path = os.path.join(os.path.dirname(__file__), "Tests", "aad.txt")
+                tag_file_path = os.path.join(os.path.dirname(__file__), "Tests", "tag.txt")
+                
+                #检查GCM所需文件是否存在
+                if not os.path.exists(iv_file_path):
+                    print(f"Error: IV file not found at {iv_file_path}")
+                    return
+                if not os.path.exists(aad_file_path):
+                    print(f"Error: AAD file not found at {aad_file_path}")
+                    return
+                
+                result = subprocess.run([
+                    executable_path,
+                    "-e", test_file_path, key_file_path, iv_file_path, aad_file_path, output_file_path, tag_file_path
+                ], capture_output=True, text=True, timeout=30)
+            else:
+                #标准SM4加密
+                result = subprocess.run([
+                    executable_path,
+                    "-e", test_file_path, key_file_path, output_file_path
+                ], capture_output=True, text=True, timeout=30)
             
             end_time = time.time()
             time_ms = (end_time - start_time) * 1000
@@ -55,6 +76,8 @@ class SM4PerformanceTest:
             #记录生成的输出文件以便后续删除
             if os.path.exists(output_file_path):
                 self.generated_files.append(output_file_path)
+            if "GCM" in executable and os.path.exists(tag_file_path):
+                self.generated_files.append(tag_file_path)
                 
         except subprocess.TimeoutExpired:
             print(f"Error: Timeout while running {executable}")
@@ -86,7 +109,7 @@ class SM4PerformanceTest:
 
 
 #使用相对路径的文件列表便于github代码迁移
-executables = ["SM4_Basic.exe", "SM4_TT.exe", "SM4_AESNI.exe"]
+executables = ["SM4_Basic.exe", "SM4_TT.exe", "SM4_AESNI.exe", "SM4_GCM.exe"]
 test_files = ["plaintext.txt"]  #Tests文件夹相对路径（参考github代码库。能够正常运行）
 test = SM4PerformanceTest(executables, test_files)
 test.run_tests()

@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D6CDA48A-4949-45E9-8441-3BED2302CDBD}|SM4_GCM\\SM4_GCM.vcxproj|G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\SM4.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D6CDA48A-4949-45E9-8441-3BED2302CDBD}|SM4_GCM\\SM4_GCM.vcxproj|solutionrelative:SM4_GCM\\SM4.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D6CDA48A-4949-45E9-8441-3BED2302CDBD}|SM4_GCM\\SM4_GCM.vcxproj|G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\SM4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D6CDA48A-4949-45E9-8441-3BED2302CDBD}|SM4_GCM\\SM4_GCM.vcxproj|solutionrelative:SM4_GCM\\SM4.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D6CDA48A-4949-45E9-8441-3BED2302CDBD}|SM4_GCM\\SM4_GCM.vcxproj|G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D6CDA48A-4949-45E9-8441-3BED2302CDBD}|SM4_GCM\\SM4_GCM.vcxproj|solutionrelative:SM4_GCM\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "main.cpp",
+              "DocumentMoniker": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\main.cpp",
+              "RelativeDocumentMoniker": "SM4_GCM\\main.cpp",
+              "ToolTip": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\main.cpp",
+              "RelativeToolTip": "SM4_GCM\\main.cpp",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAgwBUAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-08-13T01:32:51.669Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SM4.cpp",
+              "DocumentMoniker": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\SM4.cpp",
+              "RelativeDocumentMoniker": "SM4_GCM\\SM4.cpp",
+              "ToolTip": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\SM4.cpp",
+              "RelativeToolTip": "SM4_GCM\\SM4.cpp",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-08-13T01:28:42.098Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SM4.h",
+              "DocumentMoniker": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\SM4.h",
+              "RelativeDocumentMoniker": "SM4_GCM\\SM4.h",
+              "ToolTip": "G:\\Cyber_practice\\Project\\Project1-SM4\\SM4_GCM\\SM4_GCM\\SM4.h",
+              "RelativeToolTip": "SM4_GCM\\SM4.h",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACoAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-08-13T01:28:19.374Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
